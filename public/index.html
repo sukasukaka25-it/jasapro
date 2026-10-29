@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -62,7 +63,13 @@
                 </div>
             </div>
             
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-3">
+                <!-- Loyalty Points Indicator -->
+                <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold">
+                    <i class="fa-solid fa-coins text-amber-400"></i>
+                    <span id="userPoints">150 Poin Pro</span>
+                </div>
+
                 <select id="roleSelector" onchange="switchRole(this.value)" class="bg-slate-800/80 border border-slate-700 text-xs text-blue-400 font-semibold rounded-lg px-3 py-2 outline-none cursor-pointer">
                     <option value="customer">Mode: Pelanggan</option>
                     <option value="technician">Mode: Teknisi</option>
@@ -78,10 +85,10 @@
         <section class="glass-panel rounded-3xl p-6 md:p-8 relative overflow-hidden border border-slate-700/50">
             <div class="max-w-2xl relative z-10 space-y-4">
                 <span class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-400 border border-blue-500/30 inline-flex items-center gap-2">
-                    <i class="fa-solid fa-bolt text-xs"></i> Garansi Perbaikan 30 Hari
+                    <i class="fa-solid fa-bolt text-xs"></i> Garansi Perbaikan 30 Hari & Instant QRIS
                 </span>
                 <h2 class="text-3xl md:text-4xl font-extrabold leading-tight">Solusi Perbaikan Elektronik Cepat & Terpercaya.</h2>
-                <p class="text-slate-400 text-sm md:text-base">Lacak status pengerjaan secara real-time, dapatkan nota digital otomatis, dan klaim garansi tanpa ribet.</p>
+                <p class="text-slate-400 text-sm md:text-base">Lacak status pengerjaan, bayar instan via DANA QRIS, dapatkan cashback poin, dan nota digital otomatis.</p>
                 <div class="flex flex-wrap gap-3 pt-2">
                     <a href="#booking-form" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-all shadow-lg shadow-blue-600/30 flex items-center gap-2">
                         <i class="fa-solid fa-plus-circle"></i> Buat Tiket Service
@@ -105,7 +112,7 @@
                         <h3 class="font-bold text-lg text-blue-400 flex items-center gap-2">
                             <i class="fa-solid fa-file-signature"></i> Formulir Pemesanan
                         </h3>
-                        <span class="text-xs text-slate-400">Step 1 dari 2</span>
+                        <span class="text-xs text-slate-400">Pilihan Tarif Terjangkau</span>
                     </div>
 
                     <form id="serviceForm" onsubmit="handleBooking(event)" class="space-y-4 text-sm">
@@ -114,17 +121,27 @@
                             <input type="text" id="custName" required placeholder="Masukkan nama Anda" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500">
                         </div>
                         <div>
-                            <label class="block text-slate-400 text-xs font-semibold mb-1">NO. WHATSAPP</label>
-                            <input type="tel" id="custPhone" required placeholder="08xxxxxxxxxx" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500">
+                            <label class="block text-slate-400 text-xs font-semibold mb-1">NO. WHATSAPP (Format 628xxx)</label>
+                            <input type="tel" id="custPhone" required placeholder="6285772679517" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500">
                         </div>
-                        <div>
-                            <label class="block text-slate-400 text-xs font-semibold mb-1">JENIS PERANGKAT</label>
-                            <select id="deviceType" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500">
-                                <option value="Smartphone / Tablet">Smartphone / Tablet</option>
-                                <option value="Laptop / Computer">Laptop / PC Desktop</option>
-                                <option value="AC & Pendingin">AC & Pendingin</option>
-                                <option value="Elektronik Rumah">Elektronik Rumah Tangga</option>
-                            </select>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-slate-400 text-xs font-semibold mb-1">JENIS PERANGKAT</label>
+                                <select id="deviceType" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-blue-500 text-xs">
+                                    <option value="Smartphone / Tablet">Smartphone / Tablet</option>
+                                    <option value="Laptop / Computer">Laptop / PC Desktop</option>
+                                    <option value="AC & Pendingin">AC & Pendingin</option>
+                                    <option value="Elektronik Rumah">Elektronik Rumah Tangga</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-slate-400 text-xs font-semibold mb-1">PAKET BIAYA SERVICE</label>
+                                <select id="serviceCost" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3 py-2.5 text-emerald-400 font-bold focus:outline-none focus:border-blue-500 text-xs">
+                                    <option value="50">Paket Hemat A - Rp 50</option>
+                                    <option value="25">Paket Hemat B - Rp 25</option>
+                                    <option value="60000">Paket Standar - Rp 60.000</option>
+                                </select>
+                            </div>
                         </div>
                         <div>
                             <label class="block text-slate-400 text-xs font-semibold mb-1">DETAIL KELUHAN</label>
@@ -137,11 +154,11 @@
                                 <span class="text-xs text-slate-300 font-semibold"><i class="fa-solid fa-location-dot text-red-500"></i> Lokasi Panggilan (On-Site)</span>
                                 <button type="button" onclick="getGeoLocation()" class="text-[11px] text-blue-400 font-bold hover:underline">Deteksi GPS</button>
                             </div>
-                            <input type="text" id="locationCoords" readonly placeholder="Klik deteksi atau masukkan alamat manual" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-300">
+                            <input type="text" id="locationCoords" readonly placeholder="Klik deteksi atau lokasi otomatis" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-300">
                         </div>
 
                         <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-paper-plane"></i> Kirim Pesanan Service
+                            <i class="fa-solid fa-paper-plane"></i> Kirim & Lanjut Pembayaran
                         </button>
                     </form>
                 </section>
@@ -178,14 +195,29 @@
 
             </div>
 
+            <!-- Live Chat Consultation Simulation -->
+            <section class="glass-panel rounded-2xl p-6 space-y-4">
+                <h3 class="font-bold text-lg text-blue-400 flex items-center gap-2">
+                    <i class="fa-solid fa-comments"></i> Konsultasi & Live Chat Teknisi
+                </h3>
+                <div class="bg-slate-900/90 rounded-xl p-4 border border-slate-800 space-y-3 h-48 overflow-y-auto" id="chatWindow">
+                    <div class="flex gap-2 text-xs">
+                        <span class="font-bold text-indigo-400">Teknisi Pro:</span>
+                        <p class="text-slate-300">Halo! Ada yang bisa kami bantu mengenai keluhan perangkat Anda hari ini?</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <input type="text" id="chatInput" placeholder="Ketik pesan ke teknisi..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-xs text-white outline-none">
+                    <button onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-xl font-bold text-xs">Kirim</button>
+                </div>
+            </section>
+
             <!-- Customer Rating & Reviews Section -->
             <section class="glass-panel rounded-2xl p-6 space-y-4">
                 <h3 class="font-bold text-lg text-purple-400 flex items-center gap-2">
                     <i class="fa-solid fa-star"></i> Testimoni & Rating Pelanggan
                 </h3>
-                <div class="grid md:grid-cols-3 gap-4" id="reviewsContainer">
-                    <!-- Dynamic Reviews Populated Here -->
-                </div>
+                <div class="grid md:grid-cols-3 gap-4" id="reviewsContainer"></div>
             </section>
         </div>
 
@@ -222,28 +254,43 @@
                             <th class="p-3">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="adminTableBody" class="divide-y divide-slate-800">
-                        <!-- Dynamic Rows -->
-                    </tbody>
+                    <tbody id="adminTableBody" class="divide-y divide-slate-800"></tbody>
                 </table>
             </section>
         </div>
 
     </main>
 
-    <!-- Modal Digital Receipt / Struk -->
+    <!-- Modal Digital Receipt & QR Payment -->
     <div id="receiptModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
-        <div class="glass-panel bg-slate-900 rounded-3xl max-w-md w-full p-6 border border-slate-700 space-y-6 relative glow-effect">
+        <div class="glass-panel bg-slate-900 rounded-3xl max-w-md w-full p-6 border border-slate-700 space-y-5 relative glow-effect max-h-[90vh] overflow-y-auto">
             <button onclick="closeReceipt()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl">&times;</button>
             
-            <div class="text-center border-b border-slate-800 pb-4">
+            <div class="text-center border-b border-slate-800 pb-3">
                 <h3 class="font-black text-xl text-white tracking-wide">SERVICE PRO OFFICIAL</h3>
-                <p class="text-xs text-slate-400 mt-1">Jl. Teknisi Utama No. 88, Indonesia</p>
-                <p class="text-xs text-emerald-400 font-bold mt-0.5">CS WA: 085772679517</p>
+                <p class="text-xs text-slate-400 mt-0.5">Jl. Teknisi Utama No. 88, Indonesia</p>
+                <p class="text-xs text-emerald-400 font-bold mt-0.5">CS WA: 6285772679517</p>
             </div>
 
-            <div id="receiptContent" class="space-y-3 text-xs">
-                <!-- Receipt Items Injected Here -->
+            <div id="receiptContent" class="space-y-3 text-xs"></div>
+
+            <!-- QRIS / DANA Interactive Payment Gateway Area -->
+            <div id="paymentArea" class="bg-slate-950 p-4 rounded-2xl border border-blue-500/30 text-center space-y-3">
+                <div class="flex items-center justify-center gap-2">
+                    <span class="text-xs font-bold text-blue-400">BAYAR INSTAN VIA DANA QRIS</span>
+                </div>
+                
+                <!-- Displaying DANA QR Code -->
+                <div class="bg-white p-3 rounded-xl inline-block shadow-lg">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=62-857-9517-DANA-SERVICEPRO" alt="QR DANA" class="w-40 h-40 object-contain mx-auto">
+                </div>
+                
+                <p class="text-[11px] text-slate-400">Scan QR di atas dengan DANA / OVO / GoPay / ShopeePay</p>
+                <p class="text-xs font-semibold text-amber-400" id="paymentAmountText">Total: Rp 50</p>
+                
+                <button onclick="simulatePaymentSuccess()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 rounded-xl text-xs transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-circle-check"></i> Konfirmasi Pembayaran Berhasil
+                </button>
             </div>
 
             <div class="grid grid-cols-2 gap-3 pt-2">
@@ -263,13 +310,13 @@
             {
                 id: 'SRV-8876',
                 name: 'umay',
-                phone: '085694459952',
+                phone: '6285694459952',
                 device: 'AC & Pendingin',
                 issue: 'acnya kurang dingin',
-                status: 'Lunas',
-                cost: 60000,
+                status: 'Belum Bayar',
+                cost: 50,
                 date: '29/10/2026',
-                coords: 'GPS Detected: -6.2088, 106.8456'
+                coords: 'GPS: -6.2088, 106.8456'
             }
         ];
 
@@ -297,14 +344,20 @@
         function handleBooking(e) {
             e.preventDefault();
             const id = 'SRV-' + Math.floor(1000 + Math.random() * 9000);
+            const costVal = parseInt(document.getElementById('serviceCost').value);
+            
+            // Format phone number to clean country code
+            let rawPhone = document.getElementById('custPhone').value.trim().replace(/[^0-9]/g, '');
+            if(rawPhone.startsWith('0')) rawPhone = '62' + rawPhone.slice(1);
+
             const newTicket = {
                 id: id,
                 name: document.getElementById('custName').value,
-                phone: document.getElementById('custPhone').value,
+                phone: rawPhone,
                 device: document.getElementById('deviceType').value,
                 issue: document.getElementById('issueDetail').value,
-                status: 'Proses Pengecekan',
-                cost: 50000, // Biaya standar dasar
+                status: 'Belum Bayar',
+                cost: costVal,
                 date: new Date().toLocaleDateString('id-ID'),
                 coords: document.getElementById('locationCoords').value || 'Lokasi Bengkel'
             };
@@ -328,12 +381,39 @@
                 <div class="border-t border-slate-800 my-2"></div>
                 <div><span class="text-slate-400">Detail Keluhan:</span><p class="text-white italic mt-0.5">${t.issue}</p></div>
                 <div class="border-t border-slate-800 my-2"></div>
-                <div class="flex justify-between"><span>Status Bayar:</span><span class="text-emerald-400 font-bold">${t.status}</span></div>
-                <div class="flex justify-between text-sm font-bold mt-2"><span>TOTAL:</span><span class="text-emerald-400">Rp ${t.cost.toLocaleString('id-ID')}</span></div>
+                <div class="flex justify-between"><span>Status Bayar:</span><span id="receiptStatusTag" class="font-bold ${t.status === 'Lunas' ? 'text-emerald-400' : 'text-amber-400'}">${t.status}</span></div>
+                <div class="flex justify-between text-sm font-bold mt-1"><span>TOTAL:</span><span class="text-emerald-400">Rp ${t.cost.toLocaleString('id-ID')}</span></div>
             `;
             document.getElementById('receiptContent').innerHTML = html;
+            document.getElementById('paymentAmountText').innerText = `Total Bayar: Rp ${t.cost.toLocaleString('id-ID')}`;
+            
+            const payArea = document.getElementById('paymentArea');
+            if(t.status === 'Lunas') {
+                payArea.classList.add('hidden');
+            } else {
+                payArea.classList.remove('hidden');
+            }
+
             document.getElementById('receiptModal').classList.remove('hidden');
             window.activeTicketForWA = t;
+        }
+
+        function simulatePaymentSuccess() {
+            if(!window.activeTicketForWA) return;
+            const t = window.activeTicketForWA;
+            t.status = 'Lunas';
+            saveData();
+            
+            // Trigger Confetti Animation
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+
+            document.getElementById('receiptStatusTag').className = 'font-bold text-emerald-400';
+            document.getElementById('receiptStatusTag').innerText = 'Lunas';
+            document.getElementById('paymentArea').classList.add('hidden');
+            
+            // Add Loyalty Points
+            const pts = document.getElementById('userPoints');
+            pts.innerText = '200 Poin Pro (+50 Cashback)';
         }
 
         function closeReceipt() {
@@ -343,7 +423,8 @@
         function sendWA() {
             if(!window.activeTicketForWA) return;
             const t = window.activeTicketForWA;
-            const msg = `*STRUK DIGITAL SERVICE PRO*%0ANo. Nota: ${t.id}%0ANama: ${t.name}%0ALayanan: ${t.device}%0AKeluhan: ${t.issue}%0AStatus: ${t.status}%0ATotal: Rp ${t.cost.toLocaleString('id-ID')}%0A%0ATerima kasih telah mempercayai layanan kami!`;
+            const cleanIssue = encodeURIComponent(t.issue);
+            const msg = `*STRUK DIGITAL SERVICE PRO*%0ANo. Nota: ${t.id}%0ANama: ${t.name}%0ALayanan: ${t.device}%0AKeluhan: ${cleanIssue}%0AStatus: ${t.status}%0ATotal: Rp ${t.cost.toLocaleString('id-ID')}%0A%0ATerima kasih telah mempercayai layanan kami!`;
             window.open(`https://wa.me/${t.phone}?text=${msg}`, '_blank');
         }
 
@@ -356,10 +437,10 @@
             if(t) {
                 res.innerHTML = `
                     <div class="text-xs space-y-1">
-                        <div class="flex justify-between text-white font-bold"><span>Status:</span><span class="text-emerald-400">${t.status}</span></div>
+                        <div class="flex justify-between text-white font-bold"><span>Status:</span><span class="${t.status === 'Lunas' ? 'text-emerald-400' : 'text-amber-400'}">${t.status}</span></div>
                         <p class="text-slate-400">Perangkat: ${t.device}</p>
                         <p class="text-slate-400">Biaya: Rp ${t.cost.toLocaleString('id-ID')}</p>
-                        <button onclick="openReceipt('${t.id}')" class="mt-2 text-blue-400 hover:underline font-bold">Lihat Nota Digital</button>
+                        <button onclick="openReceipt('${t.id}')" class="mt-2 text-blue-400 hover:underline font-bold">Lihat Struk & Bayar</button>
                     </div>
                 `;
             } else {
@@ -383,6 +464,31 @@
             } else {
                 res.innerHTML = `<p class="text-xs text-amber-400">Garansi tidak ditemukan atau pembayaran belum lunas.</p>`;
             }
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const win = document.getElementById('chatWindow');
+            if(!input.value.trim()) return;
+
+            win.innerHTML += `
+                <div class="flex gap-2 text-xs justify-end">
+                    <p class="text-white bg-blue-600 px-3 py-1.5 rounded-xl">${input.value}</p>
+                </div>
+            `;
+            const val = input.value;
+            input.value = '';
+            win.scrollTop = win.scrollHeight;
+
+            setTimeout(() => {
+                win.innerHTML += `
+                    <div class="flex gap-2 text-xs">
+                        <span class="font-bold text-indigo-400">Teknisi Pro:</span>
+                        <p class="text-slate-300">Pesan Anda ("${val}") telah kami terima. Teknisi kami siap melayani!</p>
+                    </div>
+                `;
+                win.scrollTop = win.scrollHeight;
+            }, 1000);
         }
 
         function getGeoLocation() {
@@ -430,7 +536,7 @@
         function toggleStatus(id) {
             const t = tickets.find(x => x.id === id);
             if(t) {
-                t.status = t.status === 'Lunas' ? 'Dalam Perbaikan' : 'Lunas';
+                t.status = t.status === 'Lunas' ? 'Belum Bayar' : 'Lunas';
                 saveData();
             }
         }
